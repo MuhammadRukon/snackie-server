@@ -34,9 +34,28 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
+    //get specific brands
+    app.get("/brands/:brandName", async (req, res) => {
+      const brandName = req.params.brandName;
+      const query = { brandName: brandName };
+      const cursor = brandCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
     // get all product from database
     app.get("/products", async (req, res) => {
       const cursor = productCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    // get data according to brand name
+    app.get("/products/:brandName", async (req, res) => {
+      const brandName = req.params.brandName;
+
+      const query = { brandName: brandName };
+      const cursor = productCollection.find(query);
       const result = await cursor.toArray();
       res.send(result);
     });
@@ -46,7 +65,6 @@ async function run() {
       const product = req.body;
       const result = await productCollection.insertOne(product);
       res.send(result);
-      console.log(product);
     });
 
     await client.db("admin").command({ ping: 1 });
