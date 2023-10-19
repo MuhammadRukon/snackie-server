@@ -11,7 +11,7 @@ app.get("/", (req, res) => {
   res.send("root route of server");
 });
 
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const uri = `mongodb+srv://${process.env.USER}:${process.env.PASS}@cluster0.wgk6h9w.mongodb.net/?retryWrites=true&w=majority`;
 
 const client = new MongoClient(uri, {
@@ -53,8 +53,16 @@ async function run() {
     // get data according to brand name
     app.get("/products/:brandName", async (req, res) => {
       const brandName = req.params.brandName;
-
       const query = { brandName: brandName };
+      const cursor = productCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    app.get("/details/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const query = { _id: new ObjectId(id) };
       const cursor = productCollection.find(query);
       const result = await cursor.toArray();
       res.send(result);
